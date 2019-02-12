@@ -1,3 +1,14 @@
+%% Description
+
+% This script intends to take a structure of 3D motion capture marker data
+% and calculate the outer boundaries of the study subject's reachable
+% workspace. It does this by looping through each point and including it in
+% a set of "shell points" if any dimension of the current point is larger
+% than all of the current shell points. Another method is also used, in which 
+% the local maxima of the 3D position magnitude values are found and used as 
+% the outer shell points. This outer shell is then
+% interpolated over to show a visual representation of the space.
+
 %% Blank Workspace
 
 clear
@@ -68,6 +79,10 @@ end
 
 %% Find Local Maxima 
 
+% Since the trial is designed to be a series of arm extensions in a
+% particular direction, the local maxima of the magnitude of the 3D position data should
+% give the furthest point in a particular extension movement. 
+
 for n = 1:size(bb_std.Trajectories.Labeled.Data,3)
     r_hand_pts(n) = norm(reshape(bb_std.Trajectories.Labeled.Data(20,1:3,n),3, 1)');
     l_hand_pts(n) = norm(reshape(bb_std.Trajectories.Labeled.Data(21,1:3,n),3, 1)');
@@ -108,6 +123,10 @@ shading interp
 colormap winter
 
 %% Clear Variables
+
+% The local maxima process outlined above needs to be performed for the two
+% conditions tested in this scenario, the first in a rigid sitting position
+% and the second while allowing the subject to bend their trunk.
 
 clearvars dt F l_hand_pts r_hand_pts l_peaks r_peaks peaks tri xi yi zi
 
